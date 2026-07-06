@@ -2,7 +2,7 @@
 	"name": "tgbuildflags",
 	"displayName": "TG Build Flags",
 	"description": "Plugin to select build/debug flags for your TG Repo.",
-	"version": "1.1.0",
+	"version": "1.1.2",
 	"publisher": "changemeporfavore",
 	"engines": {
 		"vscode": "^1.85.0"
@@ -52,7 +52,10 @@
 				},
 				"tgBuildFlags.injectionMode": {
 					"type": "string",
-					"enum": ["cli-args", "write-file"],
+					"enum": [
+						"cli-args",
+						"write-file"
+					],
 					"default": "cli-args",
 					"markdownEnumDescriptions": [
 						"Clones `tgBuildFlags.baseTask` with `-D${define}` appended to its command/args (DreamMaker-style CLI defines).",

@@ -6,6 +6,8 @@ import * as vscode from 'vscode';
 interface FlagOption {
 	value: string;
 	label: string;
+	/** Flag ids that get auto-selected (and can't be unselected while this option is active). */
+	requires?: string[];
 }
 interface Flag {
 	id: string;
@@ -15,6 +17,8 @@ interface Flag {
 	description?: string;
 	requires?: string[];
 	conflictsWith?: string[];
+	/** For boolean flags: select flag ids this flag forces to a specific value when turned on, keyed by select flag id. */
+	requiresValues?: Record<string, string>;
 	/** 'boolean' (default) is a plain -D/#define toggle. 'select' carries a value. */
 	type?: 'boolean' | 'select';
 	/** Required when type is 'select'. First option's value should usually be '' (unset). */
@@ -26,7 +30,7 @@ interface Preset {
 	id: string;
 	label: string;
 	flags: string[];
-	/** Values for 'select' flags this preset should set, keyed by flag id. */
+	/** Values for select flags this preset should set, keyed by flag id. */
 	values?: Record<string, string>;
 }
 interface FlagsFile {
@@ -562,6 +566,17 @@ function save() {
 
 function setValue(id, value) {
 	values[id] = value;
+	const option = (byId(id).options || []).find(o => o.value === value);
+	for (const req of (option?.requires || [])) {
+		selected.add(req);
+	}
+	// Deselect any boolean flag that requires a different value for this select.
+	for (const f of DATA.flags) {
+		const reqVal = (f.requiresValues || {})[id];
+		if (reqVal !== undefined && reqVal !== value) {
+			selected.delete(f.id);
+		}
+	}
 	render();
 	save();
 }
@@ -572,12 +587,22 @@ function toggle(id, on) {
 		for (const req of (byId(id).requires || [])) {
 			selected.add(req);
 		}
+		for (const [selId, val] of Object.entries(byId(id).requiresValues || {})) {
+			values[selId] = val;
+		}
 	} else {
 		selected.delete(id);
 		// Drop anything that required this flag.
 		for (const f of DATA.flags) {
 			if ((f.requires || []).includes(id)) {
 				selected.delete(f.id);
+			}
+		}
+		// Reset any select value whose active option required this flag.
+		for (const f of DATA.flags) {
+			const option = (f.options || []).find(o => o.value === values[f.id]);
+			if ((option?.requires || []).includes(id)) {
+				values[f.id] = '';
 			}
 		}
 	}
@@ -651,6 +676,14 @@ function render() {
 				meta.appendChild(sel);
 				label.appendChild(meta);
 				div.appendChild(label);
+				const activeOption = (f.options || []).find(o => o.value === values[f.id]);
+				const missingReqs = (activeOption?.requires || []).filter(r => !selected.has(r));
+				if (missingReqs.length) {
+					const w = document.createElement('div');
+					w.className = 'warn';
+					w.textContent = 'Requires: ' + missingReqs.map(r => (byId(r) || {}).label || r).join(', ');
+					div.appendChild(w);
+				}
 				continue;
 			}
 
