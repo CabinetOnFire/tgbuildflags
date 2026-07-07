@@ -1,6 +1,6 @@
 # SS13 Build Flags
 
-A VS Code extension to add a checkbox picker for build/debug flags. The flag list and presets are read from the game repo's flags JSON file (`tgBuildFlags.configPath`, default `tools/build/build_flags.json`), so contributors edit flags there and this extension picks them up.
+A VS Code extension to add a checkbox picker for build/debug flags. The flag list and presets are read from the game repo's flags JSON file (`ss13BuildFlags.configPath`, default `tools/build/build_flags.json`), so contributors edit flags there and this extension picks them up.
 
 ## What it does
 
@@ -13,20 +13,20 @@ A VS Code extension to add a checkbox picker for build/debug flags. The flag lis
 - **Dependencies**: checking a flag auto-checks its `requires`;
   unchecking a requirement drops dependents; `conflictsWith` shows a warning.
 - **Injection on F5**: when the resolved launch config's `preLaunchTask`
-  matches `tgBuildFlags.baseTask`, the extension injects the selected flags
+  matches `ss13BuildFlags.baseTask`, the extension injects the selected flags
   and runs that task itself before launching the debugger, via one of two
-  modes (`tgBuildFlags.injectionMode`):
+  modes (`ss13BuildFlags.injectionMode`):
   - `cli-args` (default): clones the base task with `-D${define}` appended to
     its command/args — matches DreamMaker's own CLI define syntax.
   - `write-file`: writes the selected `#define`s into
-    `tgBuildFlags.localDefinesPath`, then runs the base task unmodified.
+    `ss13BuildFlags.localDefinesPath`, then runs the base task unmodified.
 
 ## Settings
 
-- `tgBuildFlags.configPath` — workspace-relative path to the flags JSON.
-- `tgBuildFlags.baseTask` — exact task name/label to inject flags into.
-- `tgBuildFlags.injectionMode` — `"cli-args"` or `"write-file"`.
-- `tgBuildFlags.localDefinesPath` — workspace-relative path for `write-file` mode.
+- `ss13BuildFlags.configPath` — workspace-relative path to the flags JSON.
+- `ss13BuildFlags.baseTask` — exact task name/label to inject flags into.
+- `ss13BuildFlags.injectionMode` — `"cli-args"` or `"write-file"`.
+- `ss13BuildFlags.localDefinesPath` — workspace-relative path for `write-file` mode.
 
 ## Build / run locally
 
