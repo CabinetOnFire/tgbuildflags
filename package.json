@@ -1,9 +1,9 @@
 {
-	"name": "tgbuildflags",
-	"displayName": "TG Build Flags",
-	"description": "Plugin to select build/debug flags for your TG Repo.",
-	"version": "1.1.9",
-	"publisher": "changemeporfavore",
+	"name": "ss13buildflags",
+	"displayName": "SS13 Build Flags",
+	"description": "Plugin to select build/debug flags for your SS13 Repo.",
+	"version": "1.0.0",
+	"publisher": "ss13",
 	"engines": {
 		"vscode": "^1.85.0"
 	},
@@ -18,7 +18,7 @@
 		"views": {
 			"debug": [
 				{
-					"id": "tgBuildFlags.view",
+					"id": "ss13BuildFlags.view",
 					"name": "Build Flags",
 					"type": "webview",
 					"contextualTitle": "Build Flags"
@@ -27,30 +27,30 @@
 		},
 		"commands": [
 			{
-				"command": "tgBuildFlags.pick",
+				"command": "ss13BuildFlags.pick",
 				"title": "Build Flags: Show Panel",
-				"category": "TG Build Flags"
+				"category": "SS13 Build Flags"
 			},
 			{
-				"command": "tgBuildFlags.clear",
+				"command": "ss13BuildFlags.clear",
 				"title": "Build Flags: Clear Selection",
-				"category": "TG Build Flags"
+				"category": "SS13 Build Flags"
 			}
 		],
 		"configuration": {
-			"title": "TG Build Flags",
+			"title": "SS13 Build Flags",
 			"properties": {
-				"tgBuildFlags.configPath": {
+				"ss13BuildFlags.configPath": {
 					"type": "string",
 					"default": "tools/build/build_flags.json",
 					"description": "Workspace-relative path to build_flags.json (the flag/preset source of truth)."
 				},
-				"tgBuildFlags.baseTask": {
+				"ss13BuildFlags.baseTask": {
 					"type": "string",
 					"default": null,
 					"markdownDescription": "Name of an existing task (from `tasks.json`) to run with the selected flags injected. When set, F5 will run that task with flags injected instead of the config's original `preLaunchTask`."
 				},
-				"tgBuildFlags.injectionMode": {
+				"ss13BuildFlags.injectionMode": {
 					"type": "string",
 					"enum": [
 						"cli-args",
@@ -58,15 +58,15 @@
 					],
 					"default": "cli-args",
 					"markdownEnumDescriptions": [
-						"Clones `tgBuildFlags.baseTask` with `-D${define}` appended to its command/args (DreamMaker-style CLI defines).",
-						"Writes the selected `#define`s into `tgBuildFlags.localDefinesPath`, then runs `tgBuildFlags.baseTask` unmodified. Use this when the build system has no CLI define flag."
+						"Clones `ss13BuildFlags.baseTask` with `-D${define}` appended to its command/args (DreamMaker-style CLI defines).",
+						"Writes the selected `#define`s into `ss13BuildFlags.localDefinesPath`, then runs `ss13BuildFlags.baseTask` unmodified. Use this when the build system has no CLI define flag."
 					],
 					"markdownDescription": "How selected flags get injected into the build. See the enum descriptions for each mode."
 				},
-				"tgBuildFlags.localDefinesPath": {
+				"ss13BuildFlags.localDefinesPath": {
 					"type": "string",
 					"default": "",
-					"markdownDescription": "Workspace-relative path to a file the selected `#define`s are written into before the build task runs. Only used when `tgBuildFlags.injectionMode` is `write-file`. Only the extension's own marked block within this file is touched — any other hand-written content is preserved."
+					"markdownDescription": "Workspace-relative path to a file the selected `#define`s are written into before the build task runs. Only used when `ss13BuildFlags.injectionMode` is `write-file`. Only the extension's own marked block within this file is touched — any other hand-written content is preserved."
 				}
 			}
 		}

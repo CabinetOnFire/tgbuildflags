@@ -43,11 +43,11 @@ interface FlagsFile {
 	presets: Preset[];
 }
 
-const STATE_KEY = 'tgBuildFlags.selected';
-const STATE_KEY_VALUES = 'tgBuildFlags.values';
+const STATE_KEY = 'ss13BuildFlags.selected';
+const STATE_KEY_VALUES = 'ss13BuildFlags.values';
 /** For 'text' flags: whether the typed value is currently active, independent of the text itself. */
-const STATE_KEY_ENABLED = 'tgBuildFlags.enabled';
-const VIEW_ID = 'tgBuildFlags.view';
+const STATE_KEY_ENABLED = 'ss13BuildFlags.enabled';
+const VIEW_ID = 'ss13BuildFlags.view';
 
 let statusBar: vscode.StatusBarItem;
 
@@ -65,14 +65,14 @@ export function activate(context: vscode.ExtensionContext) {
 			webviewOptions: { retainContextWhenHidden: true },
 		}),
 		// Opens the Run and Debug panel and focuses our view within it.
-		vscode.commands.registerCommand('tgBuildFlags.pick', () =>
+		vscode.commands.registerCommand('ss13BuildFlags.pick', () =>
 			vscode.commands.executeCommand(`${VIEW_ID}.focus`),
 		),
-		// Consumed by tasks as ${command:tgBuildFlags.current} -> "-DA -DB".
-		vscode.commands.registerCommand('tgBuildFlags.current', () =>
+		// Consumed by tasks as ${command:ss13BuildFlags.current} -> "-DA -DB".
+		vscode.commands.registerCommand('ss13BuildFlags.current', () =>
 			currentDefines(context),
 		),
-		vscode.commands.registerCommand('tgBuildFlags.clear', () => {
+		vscode.commands.registerCommand('ss13BuildFlags.clear', () => {
 			setSelected(context, []);
 			setValues(context, {});
 			setEnabled(context, {});
@@ -110,7 +110,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const baseTask = tasks.find((t) => t.name === baseTaskName);
 				if (!baseTask) {
 					vscode.window.showWarningMessage(
-						`TG Build Flags: could not find task "${baseTaskName}"`,
+						`SS13 Build Flags: could not find task "${baseTaskName}"`,
 					);
 					return config;
 				}
@@ -136,13 +136,13 @@ export function deactivate() { }
 
 function getBaseTaskName(): string | undefined {
 	return vscode.workspace
-		.getConfiguration('tgBuildFlags')
+		.getConfiguration('ss13BuildFlags')
 		.get<string>('baseTask');
 }
 
 function getInjectionMode(): 'cli-args' | 'write-file' {
 	return vscode.workspace
-		.getConfiguration('tgBuildFlags')
+		.getConfiguration('ss13BuildFlags')
 		.get<'cli-args' | 'write-file'>('injectionMode', 'cli-args');
 }
 
@@ -152,7 +152,7 @@ async function runTaskByName(baseTaskName: string): Promise<number | undefined> 
 	const baseTask = tasks.find((t) => t.name === baseTaskName);
 	if (!baseTask) {
 		vscode.window.showWarningMessage(
-			`TG Build Flags: could not find task "${baseTaskName}"`,
+			`SS13 Build Flags: could not find task "${baseTaskName}"`,
 		);
 		return undefined;
 	}
@@ -288,7 +288,7 @@ function flagsFilePath(): string | undefined {
 		return undefined;
 	}
 	const rel = vscode.workspace
-		.getConfiguration('tgBuildFlags')
+		.getConfiguration('ss13BuildFlags')
 		.get<string>('configPath', 'tools/build/build_flags.json');
 	return path.join(root, rel);
 }
@@ -296,7 +296,7 @@ function flagsFilePath(): string | undefined {
 function localDefinesFilePath(): string | undefined {
 	const root = workspaceRoot();
 	const rel = vscode.workspace
-		.getConfiguration('tgBuildFlags')
+		.getConfiguration('ss13BuildFlags')
 		.get<string>('localDefinesPath');
 	if (!root || !rel) {
 		return undefined;
@@ -312,7 +312,7 @@ async function openWorkspaceFile(rel: string, line?: number): Promise<void> {
 	}
 	const full = path.join(root, rel);
 	if (!fs.existsSync(full)) {
-		vscode.window.showWarningMessage(`TG Build Flags: could not find file "${rel}"`);
+		vscode.window.showWarningMessage(`SS13 Build Flags: could not find file "${rel}"`);
 		return;
 	}
 	const options: vscode.TextDocumentShowOptions | undefined = line
@@ -329,7 +329,7 @@ function loadFlags(): FlagsFile | undefined {
 	try {
 		return JSON.parse(fs.readFileSync(file, 'utf8')) as FlagsFile;
 	} catch (err) {
-		vscode.window.showErrorMessage(`TG Build Flags: failed to parse ${file}: ${err}`);
+		vscode.window.showErrorMessage(`SS13 Build Flags: failed to parse ${file}: ${err}`);
 		return undefined;
 	}
 }
@@ -512,7 +512,7 @@ function getMissingConfigHtml(): string {
 	const file = flagsFilePath() ?? 'build_flags.json';
 	return /* html */ `<!DOCTYPE html><html><body style="font-family:var(--vscode-font-family);padding:12px;color:var(--vscode-foreground);">
 	<p>Could not find <code>${file}</code>.</p>
-	<p>Set <code>tgBuildFlags.configPath</code> if it lives elsewhere in the workspace.</p>
+	<p>Set <code>ss13BuildFlags.configPath</code> if it lives elsewhere in the workspace.</p>
 	</body></html>`;
 }
 
